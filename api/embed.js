@@ -5,6 +5,11 @@ import { RedisVectorStore } from '@langchain/community/vectorstores/redis'
 
 import { createClient } from 'redis'
 
+// create the summarization model
+const summarizationModel = new LlamaCpp({
+  modelPath: 'models/mistral-7b-instruct-v0.2.Q4_K_M.gguf'
+})
+
 // create the embedding model
 const embeddingModel = new HuggingFaceTransformersEmbeddings({
   modelName: 'Xenova/all-MiniLM-L6-v2'
@@ -24,15 +29,14 @@ const vectorStore = new RedisVectorStore(embeddingModel, {
 
 export async function save(sighting) {
 
-  // const summary = await summarize(sighting.observed)
-  const summary = sighting.observed
+  const summary = await summarize(sighting.observed)
 
   await vectorStore.addDocuments([{
     metadata: sighting,
     pageContent: summary
   }])
 
-  return `Added sighting ${sighting.id} added to vector store`
+  return `Added sighting ${sighting.id} added to vector store using summary:\n${summary}`
 }
 
 export async function search(query, count) {
@@ -41,11 +45,6 @@ export async function search(query, count) {
 }
 
 async function summarize(text) {
-
-  // TODO: instantiate model outside of this function
-  const summarizationModel = new LlamaCpp({
-    modelPath: "./models/mistral-7b-instruct-v0.2.Q4_K_M.gguf"
-  })
 
   const instructionTemplate = `
     You are a helpful assistant who summarize accounts of Bigfoot sightings. These

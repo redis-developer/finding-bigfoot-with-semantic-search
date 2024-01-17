@@ -12,3 +12,10 @@ This is a work in progress so nothing solid here yet. However, the model file is
 https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.2-GGUF/blob/main/mistral-7b-instruct-v0.2.Q4_K_M.gguf
 
 More to come on how to get it running once I get it running myself!
+
+
+If you are using an Intel-based Mac, you might need to change how Metal is installed. Details are [here](https://withcatai.github.io/node-llama-cpp/guide/Metal) but the magic command is:
+
+```bash
+npx --no node-llama-cpp download --no-metal
+```
