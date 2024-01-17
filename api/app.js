@@ -1,6 +1,6 @@
 // Import express module
 import express from 'express'
-import { embedAndSave } from './embed.js'
+import { embedAndSave, queryRedis } from './embed.js'
 
 // Create an instance of express
 const app = express()
@@ -11,6 +11,12 @@ app.use(express.json())
 // Define a GET route
 app.get('/', (req, res) => {
   res.send('Hello, World!')
+})
+
+app.post('/search', async (req, res) => {
+  const query = req.body.query
+  const results = await queryRedis(query)
+  res.send(results)
 })
 
 // Define a POST route
