@@ -1,47 +1,35 @@
-import { LlamaCpp } from '@langchain/community/llms/llama_cpp'
 import { ChatPromptTemplate } from '@langchain/core/prompts'
-import { HuggingFaceTransformersEmbeddings } from '@langchain/community/embeddings/hf_transformers'
-import { RedisVectorStore } from '@langchain/community/vectorstores/redis'
 
-import { createClient } from 'redis'
-
-// create the summarization model
-const summarizationModel = new LlamaCpp({
-  modelPath: 'models/mistral-7b-instruct-v0.2.Q4_K_M.gguf'
-})
-
-// create the embedding model
-const embeddingModel = new HuggingFaceTransformersEmbeddings({
-  modelName: 'Xenova/all-MiniLM-L6-v2'
-})
-
-// connect to redis
-const redis = createClient()
-redis.on('error', (err) => console.log('Redis Client Error', err))
-await redis.connect()
-
-// create an instance of the vector store
-const vectorStore = new RedisVectorStore(embeddingModel, {
-  redisClient: redis,
-  indexName: "bigfoot:sighting:index",
-  keyPrefix: "bigfoot:sighting:",
-})
+import { summarizationModel, embeddingModel } from './models.js'
+import { redis } from './redis.js'
 
 export async function save(sighting) {
 
   const summary = await summarize(sighting.observed)
+  const embeddingBytes = await embed(summary)
 
-  await vectorStore.addDocuments([{
-    metadata: sighting,
-    pageContent: summary
-  }])
+  const key = `bigfoot:sighting:${sighting.id}`
+  await redis.hSet(key, sighting)
+  await redis.hSet(key, 'embedding', embeddingBytes)
 
-  return `Added sighting ${sighting.id} added to vector store using summary:\n${summary}`
+  return `Added sighting ${sighting.id} to vector store using summary:\n${summary}`
 }
 
 export async function search(query, count) {
-  const result = await vectorStore.similaritySearch(query, count)
-  return result
+
+  const embedding = await embeddingModel.embedQuery(query)
+  const embeddingBytes = Buffer.from(Uint32Array.from(embedding).buffer)
+  const redisQuery = `*=>[KNN ${count} @embedding $BLOB]`
+
+  const semanticSearchResults = await redis.ft.search('bigfoot:sighting:index', redisQuery, {
+    DIALECT: 2,
+    PARAMS: { 'BLOB': embeddingBytes },
+    RETURN: [ 'id', 'title', 'observed', 'classification', 'county', 'state' ]
+  })
+
+  console.log(semanticSearchResults.documents[0].value)
+
+  return semanticSearchResults.documents
 }
 
 async function summarize(text) {
@@ -65,4 +53,10 @@ async function summarize(text) {
   })
 
   return summary
+}
+
+async function embed(text) {
+  const embedding = await embeddingModel.embedDocuments([text])
+  const embeddingBytes = Buffer.from(Uint32Array.from(embedding[0]).buffer)
+  return embeddingBytes
 }
