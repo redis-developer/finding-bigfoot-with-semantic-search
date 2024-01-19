@@ -9,7 +9,8 @@ export async function save(sighting) {
   const embeddingBytes = await embed(summary)
 
   const key = `bigfoot:sighting:${sighting.id}`
-  await redis.hSet(key, sighting)
+  redis.hSet(key, sighting)
+  redis.hSet(key, 'summary', summary)
   await redis.hSet(key, 'embedding', embeddingBytes)
 
   return `Added sighting ${sighting.id} to vector store using summary:\n${summary}`
@@ -18,18 +19,18 @@ export async function save(sighting) {
 export async function search(query, count) {
 
   const embedding = await embeddingModel.embedQuery(query)
-  const embeddingBytes = Buffer.from(Uint32Array.from(embedding).buffer)
+  const embeddingBytes = Buffer.from(Float32Array.from(embedding).buffer)
   const redisQuery = `*=>[KNN ${count} @embedding $BLOB]`
 
-  const semanticSearchResults = await redis.ft.search('bigfoot:sighting:index', redisQuery, {
+  const searchResults = await redis.ft.search('bigfoot:sighting:index', redisQuery, {
     DIALECT: 2,
     PARAMS: { 'BLOB': embeddingBytes },
     RETURN: [ 'id', 'title', 'observed', 'classification', 'county', 'state' ]
   })
 
-  console.log(semanticSearchResults.documents[0].value)
+  const results =  searchResults.documents.map(document => document.value)
 
-  return semanticSearchResults.documents
+  return results
 }
 
 async function summarize(text) {
@@ -56,7 +57,7 @@ async function summarize(text) {
 }
 
 async function embed(text) {
-  const embedding = await embeddingModel.embedDocuments([text])
-  const embeddingBytes = Buffer.from(Uint32Array.from(embedding[0]).buffer)
+  const embedding = await embeddingModel.embedQuery(text)
+  const embeddingBytes = Buffer.from(Float32Array.from(embedding).buffer)
   return embeddingBytes
 }
