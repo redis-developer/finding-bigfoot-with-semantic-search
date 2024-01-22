@@ -3,6 +3,7 @@ import { ChatPromptTemplate } from '@langchain/core/prompts'
 import { summarizationModel, embeddingModel } from './models.js'
 import { redis } from './redis.js'
 
+
 export async function save(sighting) {
 
   const summary = await summarize(sighting.observed)
