@@ -6,9 +6,19 @@ redis.on('error', (err) => console.log('Redis Client Error', err))
 await redis.connect()
 
 // create index if needed
-const indices = await redis.ft._list()
-if (!indices.includes('bigfoot:sighting:index')) await createIndex()
+if (!indexExists()) await createIndex()
 
+/**
+ * Determines if the index has been created or not.
+ */
+async function indexExists() {
+  const indices = await redis.ft._list()
+  return indices.includes('bigfoot:sighting:index')
+}
+
+/**
+ * Creates the index.
+ */
 async function createIndex() {
   await redis.ft.create(
     'bigfoot:sighting:index', {

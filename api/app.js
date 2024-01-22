@@ -1,11 +1,11 @@
 import express from 'express'
+
+import { EXPRESS_PORT } from './config.js'
 import { search, save } from './embed.js'
 
-const EXPRESS_PORT = 3000
 
 const app = express()
 
-// use middleware for automagic parsing of JSON bodies
 app.use(express.json())
 
 app.post('/search', async (req, res) => {
@@ -21,7 +21,4 @@ app.post('/load', async (req, res) => {
   res.send({ "response": result })
 })
 
-
-app.listen(EXPRESS_PORT, () => {
-  console.log(`Server running on port ${EXPRESS_PORT}`)
-})
+app.listen(EXPRESS_PORT, () => console.log(`👣 Server running on port ${EXPRESS_PORT} 👣`))

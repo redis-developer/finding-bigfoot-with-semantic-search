@@ -1,6 +1,6 @@
 import { ChatPromptTemplate } from '@langchain/core/prompts'
 
-import { summarizationModel, embeddingModel } from './models.js'
+import { embeddingModel, summarizationModel } from './models.js'
 import { redis } from './redis.js'
 
 
