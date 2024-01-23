@@ -4,17 +4,37 @@ import { embeddingModel, summarizationModel } from './models.js'
 import { redis } from './redis.js'
 
 
+const instructionTemplate = `
+  You are a helpful assistant who summarize accounts of Bigfoot sightings. These
+  summaries will be used to generate embeddings for the sightings so that they can be
+  searched using vector search. You will be given an account of a Bigfoot sighting and
+  you will summarize it using no more than 512 words. You will ONLY return the summary,
+  and nothing more. You will NEVER return more than 512 words.`
+
+const sightingTemplate = "{sighting}"
+
 export async function save(sighting) {
 
-  const summary = await summarize(sighting.observed)
-  const embeddingBytes = await embed(summary)
-
+  // set the basic information in Redis
   const key = `bigfoot:sighting:${sighting.id}`
-  redis.hSet(key, sighting)
-  redis.hSet(key, 'summary', summary)
-  await redis.hSet(key, 'embedding', embeddingBytes)
+  await redis.hSet(key, sighting)
 
-  return `Added sighting ${sighting.id} to vector store using summary:\n${summary}`
+  // if there is observed text...
+  if (sighting.observed) {
+
+    // ...summarize and embed it
+    const summary = await summarize(sighting.observed)
+    const embeddingBytes = await embed(summary)
+
+    // ...save it to Redis
+    redis.hSet(key, 'summary', summary)
+    await redis.hSet(key, 'embedding', embeddingBytes)
+
+    // ...and return the results
+    return `Added sighting ${sighting.id} to vector store using summary:\n${summary}`
+  }
+
+  return `Added sighting ${sighting.id} to store without summary.`
 }
 
 export async function search(query, count) {
@@ -36,23 +56,12 @@ export async function search(query, count) {
 
 async function summarize(text) {
 
-  const instructionTemplate = `
-    You are a helpful assistant who summarize accounts of Bigfoot sightings. These
-    summaries will be used to generate embeddings for the sightings so that they can be
-    searched using vector search. You will be given an account of a Bigfoot sighting and
-    you will summarize it using no more than 512 words. You will ONLY return the summary,
-    and nothing more. You will NEVER return more than 512 words.`
-
-  const sightingTemplate = "{sighting}"
-
-  const chatPrompt = ChatPromptTemplate.fromMessages([
-    ["system", instructionTemplate],
-    ["system", sightingTemplate]
-  ])
-
-  const summary = await chatPrompt.pipe(summarizationModel).invoke({
-    sighting: text
-  })
+  const summary = await ChatPromptTemplate
+    .fromMessages([
+      ["system", instructionTemplate],
+      ["system", sightingTemplate] ])
+    .pipe(summarizationModel)
+    .invoke({ sighting: text })
 
   return summary
 }

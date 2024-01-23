@@ -6,7 +6,7 @@ redis.on('error', (err) => console.log('Redis Client Error', err))
 await redis.connect()
 
 // create index if needed
-if (!indexExists()) await createIndex()
+if (!await indexExists()) await createIndex()
 
 /**
  * Determines if the index has been created or not.
