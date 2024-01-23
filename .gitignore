@@ -1,4 +1,3 @@
 node_modules
 *.gguf
-*.json
 *.env
