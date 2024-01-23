@@ -13,6 +13,7 @@ const instructionTemplate = `
 
 const sightingTemplate = "{sighting}"
 
+// TODO: have this dump to a stream instead and process it asynchronously
 export async function save(sighting) {
 
   // set the basic information in Redis
@@ -43,6 +44,7 @@ export async function search(query, count) {
   const embeddingBytes = Buffer.from(Float32Array.from(embedding).buffer)
   const redisQuery = `*=>[KNN ${count} @embedding $BLOB]`
 
+  // TODO: add sorting by vector score
   const searchResults = await redis.ft.search('bigfoot:sighting:index', redisQuery, {
     DIALECT: 2,
     PARAMS: { 'BLOB': embeddingBytes },
@@ -56,14 +58,31 @@ export async function search(query, count) {
 
 async function summarize(text) {
 
-  const summary = await ChatPromptTemplate
-    .fromMessages([
-      ["system", instructionTemplate],
-      ["system", sightingTemplate] ])
-    .pipe(summarizationModel)
-    .invoke({ sighting: text })
+  // TODO: this is a hack to get around a bug in the summarization model
+  // NOTE: could try destroying and recreating the model here
 
-  return summary
+  let tryCount = 0
+
+  while (true) {
+    try {
+      const summary = await ChatPromptTemplate
+        .fromMessages([
+          ["system", instructionTemplate],
+          ["system", sightingTemplate] ])
+        .pipe(summarizationModel)
+        .invoke({ sighting: text })
+      return summary
+    } catch (error) {
+      console.log(error)
+      if (tryCount < 2) {
+        console.log("Retrying")
+        tryCount++
+        continue
+      } else {
+        throw error
+      }
+    }
+  }
 }
 
 async function embed(text) {

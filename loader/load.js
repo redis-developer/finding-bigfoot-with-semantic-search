@@ -37,17 +37,18 @@ for await (const line of rl) {
   console.time(sighting.id)
   console.log(count, `📖 Read Bigfoot sighting ${sighting.id}.`)
 
-  if (sighting.id === startWith) process = true
-
-  if (process === false) {
-    console.log(count, `🙅 Skipped!`)
-    continue
-  }
-
   // tokenize the observed text and log the number of tokens
   const tokens = tokenizer.tokenize(sighting.observed ?? '')
   if (tokens.length > maxTokens) maxTokens = tokens.length
   console.log(count, `👀 Sighting ${sighting.id} has ${tokens.length} tokens. Max so far is ${maxTokens}.`)
+
+  // if we are starting with a specific sighting, skip until we get there
+  if (sighting.id === startWith) process = true
+  if (!process) {
+    console.log(count, `🙅 Skipped!`)
+    console.timeEnd(sighting.id)
+    continue
+  }
 
   // post the sighting to the API and log it
   const response = await axios.post('http://localhost:3000/load', sighting)
