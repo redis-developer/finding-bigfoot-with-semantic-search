@@ -1,6 +1,6 @@
 import { ChatPromptTemplate } from '@langchain/core/prompts'
 
-import { embeddingModel, summarizationModel } from './models.js'
+import { embeddingModel, createSummarizationModel } from './models.js'
 import { redis } from './redis.js'
 
 
@@ -59,29 +59,24 @@ export async function search(query, count) {
 async function summarize(text) {
 
   // TODO: this is a hack to get around a bug in the summarization model
-  // NOTE: could try destroying and recreating the model here
+  let summarizationModel = createSummarizationModel()
 
-  let tryCount = 0
+  async function innerSummarize(text) {
+    return await ChatPromptTemplate
+    .fromMessages([
+      ["system", instructionTemplate],
+      ["system", sightingTemplate] ])
+    .pipe(summarizationModel)
+    .invoke({ sighting: text })
+  }
 
-  while (true) {
-    try {
-      const summary = await ChatPromptTemplate
-        .fromMessages([
-          ["system", instructionTemplate],
-          ["system", sightingTemplate] ])
-        .pipe(summarizationModel)
-        .invoke({ sighting: text })
-      return summary
-    } catch (error) {
-      console.log(error)
-      if (tryCount < 2) {
-        console.log("Retrying")
-        tryCount++
-        continue
-      } else {
-        throw error
-      }
-    }
+  try {
+    return await innerSummarize(text)
+  } catch (error) {
+    console.log(error)
+    console.log("Recreating model and retrying")
+    summarizationModel = createSummarizationModel(true)
+    return await innerSummarize(text)
   }
 }
 
