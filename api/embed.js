@@ -38,17 +38,28 @@ export async function save(sighting) {
   return `Added sighting ${sighting.id} to store without summary.`
 }
 
-export async function search(query, count) {
+export async function search(query, params, count) {
 
-  const embedding = await embeddingModel.embedQuery(query)
+  let searchQuery = ''
+  if (params.state) searchQuery += `@state:{${params.state}} `
+  if (params.county) searchQuery += `@county:{${params.county}} `
+  if (params.classification) searchQuery += `@classification:{${params.classification}} `
+  if (params.highTemp) searchQuery += `@highTemp:[${params.highTemp[0]} ${params.highTemp[1]}] `
+  if (params.point) searchQuery += `@latlng:[${params.point.lng} ${params.point.lat} ${params.point.radius} mi] `
+
+  if (searchQuery.length === 0) searchQuery = "*"
+
+  const vectorQuery = `KNN ${count} @embedding $BLOB`
+  const redisQuery = `(${searchQuery})=>[${vectorQuery}]`
+
+  const embedding = await fetchEmbeddingModel().embedQuery(query)
   const embeddingBytes = Buffer.from(Float32Array.from(embedding).buffer)
-  const redisQuery = `*=>[KNN ${count} @embedding $BLOB]`
 
-  // TODO: add sorting by vector score
   const searchResults = await redis.ft.search('bigfoot:sighting:index', redisQuery, {
     DIALECT: 2,
     PARAMS: { 'BLOB': embeddingBytes },
-    RETURN: [ 'id', 'title', 'observed', 'classification', 'county', 'state' ]
+    SORTBY: '__embedding_score',
+    RETURN: [ 'id', 'title', 'observed', 'classification', 'county', 'state', 'latitude', 'longitude', 'highTemp' ]
   })
 
   const results =  searchResults.documents.map(document => document.value)

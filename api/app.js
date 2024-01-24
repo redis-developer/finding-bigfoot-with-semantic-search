@@ -10,8 +10,9 @@ app.use(express.json())
 
 app.post('/search', async (req, res) => {
   const query = req.body.query
+  const params = req.body.params ?? {}
   const count = req.body.count ?? 1
-  const results = await search(query, count)
+  const results = await search(query, params, count)
   res.send(results)
 })
 

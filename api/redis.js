@@ -29,6 +29,7 @@ async function createIndex() {
       'county': SchemaFieldTypes.TAG,
       'state': SchemaFieldTypes.TAG,
       'latlng': SchemaFieldTypes.GEO,
+      'highTemp': SchemaFieldTypes.NUMERIC,
       'embedding': {
         type: SchemaFieldTypes.VECTOR,
         ALGORITHM: VectorAlgorithms.FLAT,
