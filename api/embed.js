@@ -57,27 +57,21 @@ export async function search(query, count) {
 }
 
 async function summarize(text) {
+  try {
+    return await tryToSummarize(fetchSummarizationModel(), text)
+  } catch (error) {
+    console.log("Error using model. Recreating model and retrying.", error)
+    return await innerSummarize(fetchSummarizationModel(true), text)
+  }
+}
 
-  // TODO: this is a hack to get around a bug in the summarization model
-  let summarizationModel = fetchSummarizationModel()
-
-  async function innerSummarize(text) {
-    return await ChatPromptTemplate
+async function tryToSummarize(model, text) {
+  return await ChatPromptTemplate
     .fromMessages([
       ["system", instructionTemplate],
       ["system", sightingTemplate] ])
-    .pipe(summarizationModel)
+    .pipe(model)
     .invoke({ sighting: text })
-  }
-
-  try {
-    return await innerSummarize(text)
-  } catch (error) {
-    console.log(error)
-    console.log("Recreating model and retrying")
-    summarizationModel = fetchSummarizationModel(true)
-    return await innerSummarize(text)
-  }
 }
 
 async function embed(text) {
