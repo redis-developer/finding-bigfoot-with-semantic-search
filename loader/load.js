@@ -11,9 +11,7 @@ const options = commandLineArgs([
   { name: 'startingId', type: String }
 ])
 
-console.log(options)
-
-// set up a tokenizer, and a line reader
+// set up a tokenizer and a line reader
 const tokenizer = new natural.WordTokenizer()
 const rl = readline.createInterface({
   input: fs.createReadStream(options.file),
