@@ -1,0 +1,23 @@
+{
+  "name": "embedder",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "TBD",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "author": "Guy Royse <guy@guyroyse.com> (http://guyroyse.com/)",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  },
+  "dependencies": {
+    "@langchain/community": "^0.0.20",
+    "@xenova/transformers": "^2.14.0",
+    "dotenv": "^16.4.1",
+    "langchain": "^0.1.6",
+    "node-llama-cpp": "^2.8.5",
+    "redis": "^4.6.12"
+  },
+  "private": true
+}
