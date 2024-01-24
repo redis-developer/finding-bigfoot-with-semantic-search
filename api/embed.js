@@ -1,6 +1,6 @@
 import { ChatPromptTemplate } from '@langchain/core/prompts'
 
-import { embeddingModel, createSummarizationModel } from './models.js'
+import { fetchEmbeddingModel, fetchSummarizationModel } from './models.js'
 import { redis } from './redis.js'
 
 
@@ -59,7 +59,7 @@ export async function search(query, count) {
 async function summarize(text) {
 
   // TODO: this is a hack to get around a bug in the summarization model
-  let summarizationModel = createSummarizationModel()
+  let summarizationModel = fetchSummarizationModel()
 
   async function innerSummarize(text) {
     return await ChatPromptTemplate
@@ -75,13 +75,13 @@ async function summarize(text) {
   } catch (error) {
     console.log(error)
     console.log("Recreating model and retrying")
-    summarizationModel = createSummarizationModel(true)
+    summarizationModel = fetchSummarizationModel(true)
     return await innerSummarize(text)
   }
 }
 
 async function embed(text) {
-  const embedding = await embeddingModel.embedQuery(text)
+  const embedding = await fetchEmbeddingModel().embedQuery(text)
   const embeddingBytes = Buffer.from(Float32Array.from(embedding).buffer)
   return embeddingBytes
 }

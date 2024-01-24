@@ -2,8 +2,9 @@ import { HuggingFaceTransformersEmbeddings } from '@langchain/community/embeddin
 import { LlamaCpp } from '@langchain/community/llms/llama_cpp'
 
 let summarizationModel = null
+let embeddingModel = null
 
-export function createSummarizationModel(cacheBust = false) {
+export function fetchSummarizationModel(cacheBust = false) {
   if (summarizationModel && !cacheBust) return summarizationModel
   summarizationModel = new LlamaCpp({
     modelPath: 'models/mistral-7b-instruct-v0.2.Q4_K_M.gguf',
@@ -13,12 +14,10 @@ export function createSummarizationModel(cacheBust = false) {
   return summarizationModel
 }
 
-// export const summarizationModel = new LlamaCpp({
-//   modelPath: 'models/mistral-7b-instruct-v0.2.Q4_K_M.gguf',
-//   batchSize: 8192,
-//   contextSize: 8192
-// })
-
-export const embeddingModel = new HuggingFaceTransformersEmbeddings({
-  modelName: 'Xenova/all-MiniLM-L6-v2'
-})
+export function fetchEmbeddingModel(cacheBust = false) {
+  if (embeddingModel && !cacheBust) return embeddingModel
+  embeddingModel = new HuggingFaceTransformersEmbeddings({
+    modelName: 'Xenova/all-MiniLM-L6-v2'
+  })
+  return embeddingModel
+}
