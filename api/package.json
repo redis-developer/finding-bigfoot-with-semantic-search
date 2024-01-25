@@ -4,7 +4,7 @@
   "type": "module",
   "description": "A sample application for semantic search using Redis, LangChain, and free models.",
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "node app.js"
   },
   "author": "Guy Royse <guy@guyroyse.com> (http://guyroyse.com/)",
   "license": "MIT",

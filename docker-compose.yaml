@@ -1,0 +1,22 @@
+services:
+  redis:
+    image: redis/redis-stack-server:latest
+    volumes:
+      - ./redis:/data
+    ports:
+      - "6379:6379"
+    restart: always
+
+  api:
+    build: api
+    ports:
+      - "3000:80"
+    environment:
+      - EXPRESS_PORT=80
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+  embedder:
+    build: embedder
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379

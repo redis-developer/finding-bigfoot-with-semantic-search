@@ -43,3 +43,5 @@ async function embed(text) {
   const embeddingBytes = Buffer.from(Float32Array.from(embedding).buffer)
   return embeddingBytes
 }
+
+console.log("Hello, world!")
