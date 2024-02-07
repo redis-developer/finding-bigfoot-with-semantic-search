@@ -17,7 +17,8 @@
     "dotenv": "^16.4.1",
     "langchain": "^0.1.6",
     "node-llama-cpp": "^2.8.5",
-    "redis": "^4.6.12"
+    "redis": "^4.6.12",
+    "ulid": "^2.3.0"
   },
   "private": true
 }
