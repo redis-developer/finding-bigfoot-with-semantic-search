@@ -44,7 +44,7 @@ export async function search(query, params, count) {
     DIALECT: 2,
     PARAMS: { 'BLOB': embeddingBytes },
     SORTBY: '__embedding_score',
-    RETURN: [ 'id', 'title', 'observed', 'summary', 'classification', 'county', 'state', 'latitude', 'longitude', 'highTemp' ]
+    RETURN: [ 'id', 'title', 'observed', 'summary', 'classification', 'county', 'state', 'latitude', 'longitude', 'highTemp', '__embedding_score' ]
   })
 
   const results =  searchResults.documents.map(document => document.value)
