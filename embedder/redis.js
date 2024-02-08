@@ -7,3 +7,5 @@ import { REDIS_HOST, REDIS_PORT } from './config.js'
 export const redis = createClient({ socket: { host: REDIS_HOST, port: REDIS_PORT } })
 redis.on('error', (err) => console.log('Redis Client Error', err))
 await redis.connect()
+
+// TODO: make sure Redis is up and running

@@ -3,6 +3,8 @@ import { ulid } from 'ulid'
 import { redis } from './redis.js'
 import { summarize, embed } from './embed.js'
 
+// TODO: so many things to config
+
 const streamName = 'bigfoot:sighting:reported'
 const groupName = 'bigfoot:sighting:group'
 const consumerName = ulid()
@@ -11,10 +13,17 @@ const consumerName = ulid()
 // create the consumer group
 await createConsumerGroup()
 
+// TODO: remove idle consumers from the group before starting
+// XINFO CONSUMERS bigfoot:sighting:reported bigfoot:sighting:group
+// XGROUP DELCONSUMER bigfoot:sighting:reported bigfoot:sighting:group <consumerName>
+// Only remove if pending messages is zero
+
 // loop to read from stream
 while (true) {
 
   try {
+    // TODO: claim old messages for processing first
+    // XAUTOCLAIM bigfoot:sighting:reported bigfoot:sighting:group <claimingConsumer> 600000 - COUNT 1
 
     // read from the stream
     const response = await readSightingFromStream()
@@ -40,6 +49,10 @@ while (true) {
   } catch (error) {
     console.log("Error reading from stream", error)
   }
+
+  // TODO: some sort of shutdown handling to remove the consumer from the group
+  // XGROUP DELCONSUMER bigfoot:sighting:reported bigfoot:sighting:group <consumerName>
+  // Only remove if pending messages is zero
 }
 
 async function createConsumerGroup() {
@@ -52,6 +65,7 @@ async function createConsumerGroup() {
 }
 
 async function readSightingFromStream() {
+
   return await redis.xReadGroup(groupName, consumerName, [
     { key: streamName, id: '>' }
   ], {
