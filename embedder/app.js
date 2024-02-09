@@ -1,14 +1,16 @@
 import { ulid } from 'ulid'
 
-import { redis } from './redis.js'
+import { redis, waitForRedis } from './redis.js'
 import { summarize, embed } from './embed.js'
+import { BIGFOOT_GROUP, BIGFOOT_STREAM, EVENT_IDLE_TIME, STREAM_WAIT_TIME } from './config.js'
 
-// TODO: so many things to config
+BIGFOOT_STREAM
+BIGFOOT_GROUP
 
-const streamName = 'bigfoot:sighting:reported'
-const groupName = 'bigfoot:sighting:group'
 const consumerName = ulid()
 
+// wait for Redis to finish loading
+await waitForRedis()
 
 // create the consumer group
 await createConsumerGroup()
@@ -54,7 +56,7 @@ while (true) {
 
 async function createConsumerGroup() {
   try {
-    await redis.xGroupCreate(streamName, groupName, '$', { MKSTREAM: true })
+    await redis.xGroupCreate(BIGFOOT_STREAM, BIGFOOT_GROUP, '$', { MKSTREAM: true })
   } catch(error) {
     if (error.message !== "BUSYGROUP Consumer Group name already exists") throw error
     console.log("Consumer group already exists, skipping creation")
@@ -62,25 +64,25 @@ async function createConsumerGroup() {
 }
 
 async function removeIdleConsumers() {
-  const consumers = await redis.xInfoConsumers(streamName, groupName)
+  const consumers = await redis.xInfoConsumers(BIGFOOT_STREAM, BIGFOOT_GROUP)
   for (const consumer of consumers) {
     if (consumer.pending === 0) {
-      await redis.xGroupDelConsumer(streamName, groupName, consumer.name)
+      await redis.xGroupDelConsumer(BIGFOOT_STREAM, BIGFOOT_GROUP, consumer.name)
     }
   }
 }
 
 async function claimPendingSighting() {
-  const response = await redis.xAutoClaim(streamName, groupName, consumerName, 600000, '-', { COUNT: 1 })
+  const response = await redis.xAutoClaim(BIGFOOT_STREAM, BIGFOOT_GROUP, consumerName, EVENT_IDLE_TIME, '-', { COUNT: 1 })
   return response.messages.length === 0 ? null : response.messages[0]
 }
 
 async function readSightingFromStream() {
-  const response = await redis.xReadGroup(groupName, consumerName, [
-    { key: streamName, id: '>' }
+  const response = await redis.xReadGroup(BIGFOOT_GROUP, consumerName, [
+    { key: BIGFOOT_STREAM, id: '>' }
   ], {
     COUNT: 1,
-    BLOCK: 5000
+    BLOCK: STREAM_WAIT_TIME
   })
 
   return response === null ? null : response[0].messages[0]
@@ -97,6 +99,5 @@ async function saveEmbedding(id, text) {
 }
 
 async function acknowledgeMessage(id) {
-  await redis.xAck(streamName, groupName, id)
+  await redis.xAck(BIGFOOT_STREAM, BIGFOOT_GROUP, id)
 }
-
