@@ -13,32 +13,33 @@ const consumerName = ulid()
 // create the consumer group
 await createConsumerGroup()
 
-// TODO: remove idle consumers from the group before starting
-// XINFO CONSUMERS bigfoot:sighting:reported bigfoot:sighting:group
-// XGROUP DELCONSUMER bigfoot:sighting:reported bigfoot:sighting:group <consumerName>
-// Only remove if pending messages is zero
+// remove idle and empty consumers from the group
+await removeIdleConsumers()
 
 // loop to read from stream
 while (true) {
 
   try {
-    // TODO: claim old messages for processing first
-    // XAUTOCLAIM bigfoot:sighting:reported bigfoot:sighting:group <claimingConsumer> 600000 - COUNT 1
+    // claim old messages first
+    let event = await claimPendingSighting()
+    console.log("Claimed pending event", event)
 
-    // read from the stream
-    const response = await readSightingFromStream()
+    // read from the stream if nothing claimed
+    if (event === null) {
+      event = await readSightingFromStream()
+      console.log("Read event", event)
+    }
 
     // skip if nothing is returned
-    if (response === null) {
+    if (event === null) {
       console.log("No message received, looping.")
       continue
     }
 
     // get the message contents
-    const id = response[0].messages[0].id
-    const message = response[0].messages[0].message
-    const sightingId = message.id
-    const sightingText = message.observed
+    const id = event.id
+    const sightingId = event.message.id
+    const sightingText = event.message.observed
 
     // save the embedding
     await saveEmbedding(sightingId, sightingText)
@@ -49,10 +50,6 @@ while (true) {
   } catch (error) {
     console.log("Error reading from stream", error)
   }
-
-  // TODO: some sort of shutdown handling to remove the consumer from the group
-  // XGROUP DELCONSUMER bigfoot:sighting:reported bigfoot:sighting:group <consumerName>
-  // Only remove if pending messages is zero
 }
 
 async function createConsumerGroup() {
@@ -64,14 +61,29 @@ async function createConsumerGroup() {
   }
 }
 
-async function readSightingFromStream() {
+async function removeIdleConsumers() {
+  const consumers = await redis.xInfoConsumers(streamName, groupName)
+  for (const consumer of consumers) {
+    if (consumer.pending === 0) {
+      await redis.xGroupDelConsumer(streamName, groupName, consumer.name)
+    }
+  }
+}
 
-  return await redis.xReadGroup(groupName, consumerName, [
+async function claimPendingSighting() {
+  const response = await redis.xAutoClaim(streamName, groupName, consumerName, 600000, '-', { COUNT: 1 })
+  return response.messages.length === 0 ? null : response.messages[0]
+}
+
+async function readSightingFromStream() {
+  const response = await redis.xReadGroup(groupName, consumerName, [
     { key: streamName, id: '>' }
   ], {
     COUNT: 1,
     BLOCK: 5000
   })
+
+  return response === null ? null : response[0].messages[0]
 }
 
 async function saveEmbedding(id, text) {
