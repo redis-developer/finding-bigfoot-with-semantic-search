@@ -2,11 +2,13 @@
 import { fetchEmbeddingModel } from './models.js'
 import { redis } from './redis.js'
 
+import { BIGFOOT_PREFIX, BIGFOOT_STREAM } from './config.js'
+
 
 export async function save(sighting) {
 
   // set the basic information in Redis
-  const key = `bigfoot:sighting:${sighting.id}`
+  const key = `${BIGFOOT_PREFIX}:${sighting.id}`
   await redis.hSet(key, sighting)
 
   // if there is observed text...
@@ -14,7 +16,7 @@ export async function save(sighting) {
 
     // ...dump the text into the summarization queue
     const { id, observed } = sighting
-    await redis.xAdd('bigfoot:sighting:reported', '*', { id, observed })
+    await redis.xAdd(BIGFOOT_STREAM, '*', { id, observed })
 
     // ...and log that you did
     return `Added sighting ${sighting.id} to backlog for summarization.`
