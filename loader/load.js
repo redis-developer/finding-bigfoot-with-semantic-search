@@ -49,7 +49,7 @@ for await (const line of rl) {
   }
 
   // post the sighting to the API and log it
-  const response = await axios.post('http://localhost:3000/load', sighting)
+  const response = await axios.post('http://localhost:80/load', sighting)
   console.log(count, `📄 Posted sighting ${sighting.id} with response ${JSON.stringify(response.data.response)}.`)
 
   // log the time it took to process the sighting
