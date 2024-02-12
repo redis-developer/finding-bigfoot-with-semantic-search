@@ -29,7 +29,7 @@ export async function search(query, params, count) {
   if (params.state) searchQuery += `@state:{${params.state}} `
   if (params.county) searchQuery += `@county:{${params.county}} `
   if (params.classification) searchQuery += `@classification:{${params.classification}} `
-  if (params.highTemp) searchQuery += `@highTemp:[${params.highTemp[0]} ${params.highTemp[1]}] `
+  if (params.minTemp) searchQuery += `@highTemp:[${params.minTemp} ${params.maxTemp}] `
   if (params.point) searchQuery += `@latlng:[${params.point.lng} ${params.point.lat} ${params.point.radius} mi] `
 
   if (searchQuery.length === 0) searchQuery = "*"
