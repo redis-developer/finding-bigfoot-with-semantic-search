@@ -2,7 +2,7 @@
 import { fetchEmbeddingModel } from './models.js'
 import { redis } from './redis.js'
 
-import { BIGFOOT_PREFIX, BIGFOOT_STREAM } from './config.js'
+import { BIGFOOT_INDEX, BIGFOOT_PREFIX, BIGFOOT_STREAM } from './config.js'
 
 
 export async function save(sighting) {
@@ -42,7 +42,7 @@ export async function search(query, params, count) {
   const embedding = await fetchEmbeddingModel().embedQuery(query)
   const embeddingBytes = Buffer.from(Float32Array.from(embedding).buffer)
 
-  const searchResults = await redis.ft.search('bigfoot:sighting:index', redisQuery, {
+  const searchResults = await redis.ft.search(BIGFOOT_INDEX, redisQuery, {
     DIALECT: 2,
     PARAMS: { 'BLOB': embeddingBytes },
     SORTBY: '__embedding_score',

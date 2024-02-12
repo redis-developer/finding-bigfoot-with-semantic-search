@@ -53,7 +53,7 @@ async function indexExists() {
  */
 async function createIndex() {
   await redis.ft.create(
-    'bigfoot:sighting:index', {
+    BIGFOOT_INDEX, {
       'id': SchemaFieldTypes.TAG,
       'title': SchemaFieldTypes.TEXT,
       'observed': SchemaFieldTypes.TEXT,
