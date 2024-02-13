@@ -96,7 +96,7 @@
   <div class="mt-6 grid grid-cols-1 gap-x-4 gap-y-4 md:grid-cols-2 lg:grid-cols-3">
 	{#each form as result}
 		<div class="bg-white border border-gray-400 rounded-md p-4">
-      <h3 class="font-semibold text-base">{result.title}</h3>
+      <h3 class="font-semibold text-base">{result.title ?? 'Untitled'}</h3>
       <!-- score guage -->
       <div class="mt-2 flex w-24 h-2 bg-gray-200 rounded-full overflow-hidden dark:bg-gray-700" role="progressbar" aria-valuenow={result.__embedding_score * 100} aria-valuemin="0" aria-valuemax="100">
         <div class="flex flex-col justify-center rounded-full overflow-hidden bg-green-600 text-xs text-white text-center whitespace-nowrap transition duration-500 dark:bg-blue-500" style="width: {result.__embedding_score * 100}%"></div>
