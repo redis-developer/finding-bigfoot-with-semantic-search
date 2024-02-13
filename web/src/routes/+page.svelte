@@ -95,30 +95,29 @@
 {#if form}
   <div class="mt-6 grid grid-cols-1 gap-x-4 gap-y-4 md:grid-cols-2 lg:grid-cols-3">
 	{#each form as result}
-		<div class="bg-white border border-gray-400 rounded-md p-4">
+		<div class="bg-white border border-gray-400 rounded-md p-4 flex flex-col">
       <h3 class="font-semibold text-base">{result.title ?? 'Untitled'}</h3>
       <!-- score guage -->
       <div class="mt-2 flex w-24 h-2 bg-gray-200 rounded-full overflow-hidden dark:bg-gray-700" role="progressbar" aria-valuenow={result.__embedding_score * 100} aria-valuemin="0" aria-valuemax="100">
         <div class="flex flex-col justify-center rounded-full overflow-hidden bg-green-600 text-xs text-white text-center whitespace-nowrap transition duration-500 dark:bg-blue-500" style="width: {result.__embedding_score * 100}%"></div>
       </div>
 			<p class="mt-2 text-slate-600 text-sm">{result.summary}</p>
-      <p class="mt-2 text-slate-800">{result.classification} Sighting</p>
-      <p class="mt-2 text-slate-800 text-sm flex items-center">
-        <img class="w-5 h-5 text-slate-600 mr-1.5" src="/public_FILL0_wght300_GRAD0_opsz24.svg" alt="" /> {result.county} {result.state}
-      </p>
-      <p class="mt-2 text-slate-800 text-sm flex items-center">
-        {#if result.latitude}
-          <img class="w-5 h-5 text-slate-600 mr-1.5" src="/location_on_FILL0_wght300_GRAD0_opsz24.svg" alt="" /> {result.latitude}, {result.longitude}
-        {:else}
-          <img class="w-5 h-5 text-slate-600 mr-1.5" src="/not_listed_location_FILL0_wght300_GRAD0_opsz24.svg" alt="" /> Unknown location
-        {/if}
-      </p>
-      {#if result.highTemp}
+      <div class="mt-auto">
+        <p class="mt-2 text-slate-800">{result.classification} Sighting</p>
         <p class="mt-2 text-slate-800 text-sm flex items-center">
-          <img class="w-5 h-5 text-slate-600 mr-1.5" src="/thermostat_FILL0_wght300_GRAD0_opsz24.svg" alt="" /> {result.highTemp}
+          <img class="w-5 h-5 text-slate-600 mr-1.5" src="/public_FILL0_wght300_GRAD0_opsz24.svg" alt="" /> {result.county} {result.state}
         </p>
-      {/if}
-
+        <p class="mt-2 text-slate-800 text-sm flex items-center">
+          {#if result.latitude}
+            <img class="w-5 h-5 text-slate-600 mr-1.5" src="/location_on_FILL0_wght300_GRAD0_opsz24.svg" alt="" /> {result.latitude}, {result.longitude}
+          {:else}
+            <img class="w-5 h-5 text-slate-600 mr-1.5" src="/not_listed_location_FILL0_wght300_GRAD0_opsz24.svg" alt="" /> Unknown location
+          {/if}
+        </p>
+        <p class="mt-2 text-slate-800 text-sm flex items-center">
+          <img class="w-5 h-5 text-slate-600 mr-1.5" src="/thermostat_FILL0_wght300_GRAD0_opsz24.svg" alt="" /> {result.highTemp ?? 'Unknown'}
+        </p>
+      </div>
 		</div>
   {:else}
     <p>No results found</p>
