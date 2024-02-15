@@ -8,8 +8,6 @@ services:
 
   api:
     build: api
-    ports:
-      - "3000:80"
     environment:
       - EXPRESS_PORT=80
       - REDIS_HOST=redis
@@ -25,9 +23,15 @@ services:
     depends_on:
       - redis
 
-  frontend:
+  web:
     build: web
+    depends_on:
+      - api
+
+  gateway:
+    build: gateway
     ports:
       - "8080:80"
     depends_on:
       - api
+      - web
