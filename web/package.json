@@ -1,0 +1,22 @@
+{
+  "name": "tailwind-htmx",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "author": "Guy Royse <guy@guyroyse.com> (http://guyroyse.com/)",
+  "private": true,
+  "devDependencies": {
+    "@vituum/vite-plugin-concat": "^1.1.0",
+    "autoprefixer": "^10.4.17",
+    "handlebars": "^4.7.8",
+    "htmx.org": "^1.9.10",
+    "postcss": "^8.4.35",
+    "tailwindcss": "^3.4.1",
+    "vite": "^5.1.2"
+  }
+}
