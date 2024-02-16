@@ -4,7 +4,7 @@
   "type": "module",
   "description": "Reads all the Bigfoot sightings from a JSONL file and saves them to Bigfoot Semantic Search API.",
   "scripts": {
-    "start": "node load.js"
+    "start": "node load.js --file ../data/bfro_reports_geocoded.jsonl"
   },
   "author": "Guy Royse <guy@guyroyse.com> (http://guyroyse.com/)",
   "license": "MIT",

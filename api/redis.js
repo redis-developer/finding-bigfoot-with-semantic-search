@@ -1,6 +1,6 @@
 import { SchemaFieldTypes, VectorAlgorithms, createClient } from 'redis'
 
-import { BIGFOOT_INDEX, REDIS_HOST, REDIS_PORT } from './config.js'
+import { BIGFOOT_PREFIX, BIGFOOT_INDEX, REDIS_HOST, REDIS_PORT } from './config.js'
 
 
 // connect to redis
@@ -53,7 +53,7 @@ async function indexExists() {
  */
 async function createIndex() {
   await redis.ft.create(
-    'bigfoot:sighting:index', {
+    BIGFOOT_INDEX, {
       'id': SchemaFieldTypes.TAG,
       'title': SchemaFieldTypes.TEXT,
       'observed': SchemaFieldTypes.TEXT,
