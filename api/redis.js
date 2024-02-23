@@ -1,6 +1,6 @@
 import { SchemaFieldTypes, VectorAlgorithms, createClient } from 'redis'
 
-import { BIGFOOT_INDEX, REDIS_HOST, REDIS_PORT } from './config.js'
+import { BIGFOOT_INDEX, BIGFOOT_PREFIX, REDIS_HOST, REDIS_PORT } from './config.js'
 
 
 // connect to redis
