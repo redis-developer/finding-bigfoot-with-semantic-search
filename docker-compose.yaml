@@ -15,13 +15,13 @@ services:
     depends_on:
       - redis
 
-  embedder:
-    build: embedder
-    environment:
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-    depends_on:
-      - redis
+  # embedder:
+  #   build: embedder
+  #   environment:
+  #     - REDIS_HOST=redis
+  #     - REDIS_PORT=6379
+  #   depends_on:
+  #     - redis
 
   web:
     build: web

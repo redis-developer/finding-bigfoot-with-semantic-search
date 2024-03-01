@@ -4,7 +4,11 @@ export default {
     './src/**/*.{js,html,json}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        'acme': ['Acme', 'sans-serif']
+      },
+    },
   },
   plugins: [],
 }

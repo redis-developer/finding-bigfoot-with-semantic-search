@@ -1,0 +1,21 @@
+<template id="search-results-template">
+
+  <div hx-get="/search-bar.html" hx-swap="outerHTML" hx-trigger="load" hx-push-url="false"></div>
+
+  {{#each this}}
+    <h2
+      class="text-4xl pt-6"
+      hx-post="http://localhost:3000/api/fetch"
+      hx-target="main"
+      hx-push-url="/sighting/{{id}}"
+      hx-ext="json-enc"
+      hx-vals='{ "id": "{{id}}" }'
+      handlebars-template="sighting-template"
+    >{{title}}</h2>
+    <p>{{observed}}</p>
+  {{/each}}
+
+  <button hx-get="/main.html" hx-target="main" hx-push-url="/">Home</button>
+
+</template>
+

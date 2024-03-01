@@ -4,9 +4,6 @@ import { redis, waitForRedis } from './redis.js'
 import { summarize, embed } from './embed.js'
 import { BIGFOOT_GROUP, BIGFOOT_STREAM, EVENT_IDLE_TIME, STREAM_WAIT_TIME } from './config.js'
 
-BIGFOOT_STREAM
-BIGFOOT_GROUP
-
 const consumerName = ulid()
 
 // wait for Redis to finish loading

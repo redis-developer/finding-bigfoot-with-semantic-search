@@ -1,12 +1,14 @@
 import express from 'express'
+import cors from 'cors'
 
 import { EXPRESS_BASE_URL, EXPRESS_PORT } from './config.js'
 import { search, save } from './embed.js'
 
 
 const app = express()
-const server = express()
 
+const server = express()
+server.use(cors())
 server.use(EXPRESS_BASE_URL, app)
 
 app.use(express.json())
