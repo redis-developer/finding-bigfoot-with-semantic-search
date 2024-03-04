@@ -17,7 +17,7 @@ export default class SearchView extends UnlitElement {
   }
 
   #searchTask = new Task(this, {
-    task: async ([query, count]) => {
+    task: async ([ query ]) => {
       const response = await fetch(`http://localhost:3000/api/search`, {
         method: 'POST',
         headers: {

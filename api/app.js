@@ -2,7 +2,7 @@ import express from 'express'
 import cors from 'cors'
 
 import { EXPRESS_BASE_URL, EXPRESS_PORT } from './config.js'
-import { search, save } from './embed.js'
+import { fetch, search, save } from './embed.js'
 
 
 const app = express()
@@ -25,6 +25,12 @@ app.post('/load', async (req, res) => {
   const sighting = req.body
   const result = await save(sighting)
   res.send({ "response": result })
+})
+
+app.post('/fetch', async (req, res) => {
+  const id = req.body.id
+  const result = await fetch(id)
+  res.send(result)
 })
 
 server.listen(EXPRESS_PORT, () => console.log(`👣 Server running on port ${EXPRESS_PORT} at ${EXPRESS_BASE_URL} 👣`))

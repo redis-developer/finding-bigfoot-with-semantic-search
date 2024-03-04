@@ -1,5 +1,8 @@
 import { html, css } from 'lit'
+
 import UnlitElement from '../util/unlit-element.js'
+import SearchResult from '../components/search-result.js'
+
 
 export default class SearchResults extends UnlitElement {
 
@@ -15,8 +18,7 @@ export default class SearchResults extends UnlitElement {
     return html`
       ${this.sightings.map(sighting =>
         html`
-          <h1 class="text-4xl pt-6">${sighting.title}</h1>
-          <p>${sighting.observed}</p>
+          <search-result .sighting=${sighting}></search-result>
         `
       )}
     `

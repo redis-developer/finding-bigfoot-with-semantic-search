@@ -53,3 +53,10 @@ export async function search(query, params, count) {
 
   return results
 }
+
+export async function fetch(id) {
+  const key = `${BIGFOOT_PREFIX}:${id}`
+  const sighting = await redis.hGetAll(key)
+  delete sighting.embedding
+  return sighting
+}
