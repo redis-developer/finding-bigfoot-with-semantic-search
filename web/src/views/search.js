@@ -19,7 +19,7 @@ export default class SearchView extends UnlitElement {
     return html`
       <div class="flex flex-row items-top pt-8 pr-64">
 
-        <h1 class="flex-none text-3xl pl-6 pr-12 font-acme">👣 Bigfoot Finder</h1>
+        <h1 class="flex-none text-3xl pl-6 pr-12 font-acme"><a href="/">👣 Bigfoot Finder</a></h1>
 
         <div class="flex flex-col items-left">
           <search-bar
@@ -58,7 +58,7 @@ export default class SearchView extends UnlitElement {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ query, count: 5 })
+        body: JSON.stringify({ query, count: 10 })
       })
 
       if (!response.ok) throw new Error(response.status)

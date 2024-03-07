@@ -44,7 +44,7 @@ export default class SightingDetail extends UnlitElement {
     return html`
       <div class="flex flex-row items-top pt-8 pr-64">
 
-        <h1 class="flex-none text-3xl pl-6 pr-12 font-acme">👣 Bigfoot Finder</h1>
+        <h1 class="flex-none text-3xl pl-6 pr-12 font-acme"><a href="/">👣 Bigfoot Finder</a></h1>
 
         <div class="flex flex-col items-left pb-96">
 
@@ -76,7 +76,7 @@ export default class SightingDetail extends UnlitElement {
           <p>
             <span class="font-bold">Coordinates:</span>
             <span>${coordinates}</span>
-            <a href="${mapUrl}" target="_blank">🌎</a>
+            ${ mapUrl ? html`<a href="${mapUrl}" target="_blank">🌎</a>` : '' }
           </p>
 
           <h2 class="text-xl font-semibold pt-4">Weather</h2>
@@ -87,7 +87,7 @@ export default class SightingDetail extends UnlitElement {
             <span>${this.sighting.weatherSummary}</span>
           </p>
 
-          <div class="flex flex-row items-top w-1/2 pt-4">
+          <div class="flex flex-row items-top w-full pt-4">
 
             <div class="flex flex-col items-left w-full">
               <div class="flex flex-row items-top border-b px-2 py-1">
@@ -152,10 +152,12 @@ export default class SightingDetail extends UnlitElement {
   }
 
   #formatTitle({ id, title }) {
+    if (title === undefined) return `Report ${id}`
     return `Report ${id}: ${title}`
   }
 
   #formatDate({ timestamp }) {
+    if (timestamp == undefined) return '--'
     return new Intl.DateTimeFormat('en-US', {
       month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'
     }).format(new Date(timestamp * 1000))
@@ -166,10 +168,12 @@ export default class SightingDetail extends UnlitElement {
   }
 
   #formatCoordinates({ latitude, longitude }) {
+    if (latitude === undefined || longitude === undefined) return '--'
     return `${latitude}, ${longitude}`
   }
 
   #formatMapUrl({ latitude, longitude }) {
+    if (latitude === undefined || longitude === undefined) return ''
     return `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`
   }
 
@@ -180,6 +184,7 @@ export default class SightingDetail extends UnlitElement {
   }
 
   #formatTemperature(temperature) {
+    if (temperature === undefined) return '--'
     return `${Math.round(temperature)}°F`
   }
 
@@ -188,18 +193,22 @@ export default class SightingDetail extends UnlitElement {
   }
 
   #formatHumidity({ humidity }) {
+    if (humidity === undefined) return '--'
     return this.#formatPercentage(humidity)
   }
 
   #formatPressure({ pressure }) {
+    if (pressure === undefined) return '--'
     return `${pressure} mb`
   }
 
   #formatVisibility({ visibility }) {
+    if (visibility === undefined) return '--'
     return `${visibility} miles`
   }
 
   #formatUvIndex({ uvIndex }) {
+    if (uvIndex === undefined) return '--'
     return `${uvIndex}`
   }
 
@@ -208,10 +217,12 @@ export default class SightingDetail extends UnlitElement {
   }
 
   #formatPrecipitationChance({ precipitationProbability }) {
+    if (!precipitationProbability) return '--'
     return this.#formatPercentage(precipitationProbability)
   }
 
   #formatPercentage(number) {
+    if (number === undefined) return '--'
     return `${Math.round(number * 100)}%`
   }
 }

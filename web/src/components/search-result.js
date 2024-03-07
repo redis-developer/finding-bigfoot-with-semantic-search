@@ -10,13 +10,16 @@ export default class SearchResult extends UnlitElement {
   }
 
   render() {
+    const title = this.sighting.title === undefined
+      ? `Report ${this.sighting.id}`
+      : `Report ${this.sighting.id}: ${this.sighting.title}`
     const url = `/sighting/${this.sighting.id}`
+
     return html`
       <h1 class="text-2xl pr-24">
         <a
           class="line-clamp-1 underline hover:no-underline text-red-900"
-          href="${url}">
-            Report ${this.sighting.id}: ${this.sighting.title}
+          href="${url}">${title}
         </a>
       </h1>
       <p

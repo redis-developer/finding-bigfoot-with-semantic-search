@@ -7,7 +7,8 @@ export class MoonPhase {
   #index = 0
 
   constructor(moonPhase) {
-    if (moonPhase <= 0.0625) this.#index = 0
+    if (moonPhase === undefined) this.#index = -1
+    else if (moonPhase <= 0.0625) this.#index = 0
     else if (moonPhase <= 0.1875) this.#index = 1
     else if (moonPhase <= 0.3125) this.#index = 2
     else if (moonPhase <= 0.4375) this.#index = 3
@@ -19,10 +20,12 @@ export class MoonPhase {
   }
 
   get text() {
+    if (this.#index === -1) return 'Unknown'
     return this.#name[this.#index]
   }
 
   get icon() {
+    if (this.#index === -1) return '🌕'
     return this.#icons[this.#index]
   }
 }
@@ -34,7 +37,8 @@ export class CloudCover {
   #index = 0
 
   constructor(cloudCover) {
-    if (cloudCover <= 0.125) this.#index = 0
+    if (cloudCover === undefined) this.#index = -1
+    else if (cloudCover <= 0.125) this.#index = 0
     else if (cloudCover <= 0.375) this.#index = 1
     else if (cloudCover <= 0.625) this.#index = 2
     else if (cloudCover <= 0.875) this.#index = 3
@@ -42,10 +46,12 @@ export class CloudCover {
   }
 
   get text() {
+    if (this.#index === -1) return 'Unknown'
     return this.#names[this.#index]
   }
 
   get icon() {
+    if (this.#index === -1) return '🌤️'
     return this.#icons[this.#index]
   }
 }
@@ -56,11 +62,16 @@ export class Wind {
   #index = 0
 
   constructor(speed, bearing) {
-    this.#speed = Math.round(speed)
-    this.#index = Math.round(Number(bearing) / 22.5)
+    if (speed === undefined || bearing === undefined) {
+      this.#index = -1
+    } else {
+      this.#speed = Math.round(speed)
+      this.#index = Math.round(Number(bearing) / 22.5)
+    }
   }
 
   get text() {
+    if (this.#index === -1) return 'Unknown'
     return `${this.#directions[this.#index]} ${this.#speed} mph`
   }
 }
