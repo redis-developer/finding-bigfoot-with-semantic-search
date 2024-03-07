@@ -5,10 +5,6 @@ import UnlitElement from '../util/unlit-element.js'
 
 export default class SearchBar extends UnlitElement {
 
-  static styles = css`
-    :host { display: block; }
-  `
-
   render() {
     return html`
       <div class="flex flex-row outline outline-1 outline-gray-800 rounded-md w-12/12 px-2 py-1 drop-shadow-md bg-white">
@@ -17,7 +13,8 @@ export default class SearchBar extends UnlitElement {
           class="w-full bg-transparent outline-none px-2"
           type="text"
           name="query"
-          placeholder="Search for Bigfoot..." @change="${this.#dispatchChangeEvent}">
+          placeholder="Search for Bigfoot..."
+          @change="${this.#dispatchChangeEvent}">
       </div>`
   }
 

@@ -1,24 +1,59 @@
 import { Router } from '@vaadin/router'
 import { Task } from '@lit/task'
-import { html, css } from 'lit'
+import { html } from 'lit'
 
 import UnlitElement from '../util/unlit-element.js'
 import SearchBar from '../components/search-bar.js'
 import SearchResults from '../components/search-results.js'
 
+import { API_BASE_URL } from '../config.js'
+
 
 export default class SearchView extends UnlitElement {
-  static styles = css`
-    :host { display: block; }
-  `
 
   static properties = {
     location: { type: Object }
   }
 
+  render() {
+    return html`
+      <div class="flex flex-row items-top pt-8 pr-64">
+
+        <h1 class="flex-none text-3xl pl-6 pr-12 font-acme">👣 Bigfoot Finder</h1>
+
+        <div class="flex flex-col items-left">
+          <search-bar
+            class="w-full pb-9 block"
+            @bigfoot:querySubmitted="${this.#onQuerySubmitted}">
+          </search-bar>
+
+          <hr class="border-gray-500"/>
+
+          ${this.#searchTask.render({
+
+            pending: () => html`
+              <p>In Search of Bigfoot...</p>`,
+
+            complete: (results) => html`
+              <search-results
+                class="w-full pt-6 block"
+                .sightings=${results}>
+              </search-results>`,
+
+            error: (e) => html`
+              <p>Error: ${e}</p>`
+
+            })
+          }
+
+        </div>
+      </div>
+    `
+  }
+
   #searchTask = new Task(this, {
     task: async ([ query ]) => {
-      const response = await fetch(`http://localhost:3000/api/search`, {
+      const response = await fetch(`${API_BASE_URL}/search`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -31,18 +66,6 @@ export default class SearchView extends UnlitElement {
     },
     args: () => [ this.location.params.query ]
   })
-
-  render() {
-    return html`
-      <search-bar class="w-6/12" @bigfoot:querySubmitted="${this.#onQuerySubmitted}"></search-bar>
-      ${this.#searchTask.render({
-        pending: () => html`<p>In Search of Bigfoot...</p>`,
-        complete: (results) => html`<search-results .sightings=${results}></search-results>`,
-        error: (e) => html`<p>Error: ${e}</p>`
-    })
-    }
-    `
-  }
 
   #onQuerySubmitted(event) {
     const query = event.detail.query

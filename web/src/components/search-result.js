@@ -1,22 +1,28 @@
-import { html, css } from 'lit'
+import { html } from 'lit'
 
 import UnlitElement from '../util/unlit-element.js'
 
 
 export default class SearchResult extends UnlitElement {
 
-  static styles = css`
-    :host { display: block; }
-  `
-
   static properties = {
     sighting: { type: Object }
   }
 
   render() {
+    const url = `/sighting/${this.sighting.id}`
     return html`
-      <h1 class="text-4xl pt-6"><a href="/sighting/${this.sighting.id}">${this.sighting.title}</a></h1>
-      <p>${this.sighting.observed}</p>
+      <h1 class="text-2xl pr-24">
+        <a
+          class="line-clamp-1 underline hover:no-underline text-red-900"
+          href="${url}">
+            Report ${this.sighting.id}: ${this.sighting.title}
+        </a>
+      </h1>
+      <p
+        class="line-clamp-3 text-ellipsis overflow-hidden">
+          ${this.sighting.summary}
+      </p>
     `
   }
 }

@@ -1,14 +1,13 @@
 import { Task } from '@lit/task'
-import { html, css } from 'lit'
+import { html } from 'lit'
 
 import UnlitElement from '../util/unlit-element.js'
 import SightingDetail from '../components/sighting-detail.js'
 
+import { API_BASE_URL } from '../config.js'
+
 
 export default class SightingView extends UnlitElement {
-  static styles = css`
-    :host { display: block; }
-  `
 
   static properties = {
     location: { type: Object }
@@ -16,7 +15,7 @@ export default class SightingView extends UnlitElement {
 
   #sightingTask = new Task(this, {
     task: async ([ id ]) => {
-      const response = await fetch(`http://localhost:3000/api/fetch`, {
+      const response = await fetch(`${API_BASE_URL}/fetch`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
