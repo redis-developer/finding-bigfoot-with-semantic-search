@@ -13,6 +13,16 @@ export default class SightingView extends UnlitElement {
     location: { type: Object }
   }
 
+  render() {
+    return html`
+      ${this.#sightingTask.render({
+        pending: () => html`<p>In Search of Bigfoot...</p>`,
+        complete: (results) => html`<sighting-detail .sighting=${results}></sighting-detail>`,
+        error: (e) => html`<p>Error: ${e}</p>`
+      })}
+    `
+  }
+
   #sightingTask = new Task(this, {
     task: async ([ id ]) => {
       const response = await fetch(`${API_BASE_URL}/fetch`, {
@@ -29,16 +39,6 @@ export default class SightingView extends UnlitElement {
     args: () => [ this.location.params.id ]
   })
 
-  render() {
-    return html`
-      ${this.#sightingTask.render({
-        pending: () => html`<p>In Search of Bigfoot...</p>`,
-        complete: (results) => html`<sighting-detail .sighting=${results}></sighting-detail>`,
-        error: (e) => html`<p>Error: ${e}</p>`
-    })
-    }
-    `
-  }
 }
 
 customElements.define('sighting-view', SightingView)

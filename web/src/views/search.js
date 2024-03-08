@@ -6,7 +6,7 @@ import UnlitElement from '../util/unlit-element.js'
 import SearchBar from '../components/search-bar.js'
 import SearchResults from '../components/search-results.js'
 
-import { API_BASE_URL } from '../config.js'
+import { API_BASE_URL, RESULT_COUNT } from '../config.js'
 
 
 export default class SearchView extends UnlitElement {
@@ -43,8 +43,7 @@ export default class SearchView extends UnlitElement {
             error: (e) => html`
               <p>Error: ${e}</p>`
 
-            })
-          }
+          })}
 
         </div>
       </div>
@@ -58,7 +57,7 @@ export default class SearchView extends UnlitElement {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ query, count: 10 })
+        body: JSON.stringify({ query, count: RESULT_COUNT })
       })
 
       if (!response.ok) throw new Error(response.status)
@@ -71,6 +70,7 @@ export default class SearchView extends UnlitElement {
     const query = event.detail.query
     Router.go('/search/' + query)
   }
+
 }
 
 customElements.define('search-view', SearchView)
