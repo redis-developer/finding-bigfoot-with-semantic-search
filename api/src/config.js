@@ -3,7 +3,7 @@ import 'dotenv/config'
 export const EXPRESS_PORT = Number(process.env.EXPRESS_PORT ?? 80)
 export const EXPRESS_BASE_URL = process.env.EXPRESS_BASE_URL ?? '/'
 
-export const REDIS_HOST = process.env.REDIS_HOST ?? 'localhost'
+export const REDIS_HOST = process.env.REDIS_HOST ?? 'redis'
 export const REDIS_PORT = Number(process.env.REDIS_PORT ?? 6379)
 
 export const BIGFOOT_PREFIX = process.env.BIGFOOT_PREFIX ?? 'bigfoot:sighting'
