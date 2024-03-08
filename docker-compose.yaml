@@ -10,21 +10,26 @@ services:
     build: api
     environment:
       - EXPRESS_PORT=80
+      - EXPRESS_BASE_URL=/
       - REDIS_HOST=redis
       - REDIS_PORT=6379
     depends_on:
       - redis
 
-  # embedder:
-  #   build: embedder
-  #   environment:
-  #     - REDIS_HOST=redis
-  #     - REDIS_PORT=6379
-  #   depends_on:
-  #     - redis
+  embedder:
+    build: embedder
+    deploy:
+      replicas: 3
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - redis
 
   web:
     build: web
+    environment:
+      - VITE_API_BASE_URL=/api
     depends_on:
       - api
 
