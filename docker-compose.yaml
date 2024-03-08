@@ -19,7 +19,10 @@ services:
   # embedder:
   #   build: embedder
   #   deploy:
-  #     replicas: 3
+  #     replicas: 1
+  #     resources:
+  #       limits:
+  #         memory: 12G
   #   environment:
   #     - REDIS_HOST=redis
   #     - REDIS_PORT=6379
