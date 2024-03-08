@@ -2,18 +2,31 @@ import { SchemaFieldTypes, VectorAlgorithms, createClient } from 'redis'
 
 import { BIGFOOT_INDEX, BIGFOOT_PREFIX, REDIS_HOST, REDIS_PORT } from './config.js'
 
+/*
+  NOTE: This code create the index if it is missing but it also assumes that
+  the index will not change. If you change the index, you'll need to remove it
+  manually using the following command before running the server again:
 
-// connect to redis
-export const redis = createClient({ socket: { host: REDIS_HOST, port: REDIS_PORT } })
-redis.on('error', (err) => console.log('Redis Client Error', err))
-await redis.connect()
+    redis.cloud> FT.DROPINDEX bigfoot:sighting:index
 
-// wait for Redis to finish loading
+  Also, if you changed the BIGFOOT_INDEX or BIGFOOT_PREFIX values, the index
+  name in the command above will need to be updated accordingly.
+*/
+
+export const redis = await connectToRedis()
 await waitForRedis()
-
-// create index if needed
 if (!await indexExists()) await createIndex()
 
+
+/**
+ * Connect to Redis
+ */
+async function connectToRedis() {
+  const redis = createClient({ socket: { host: REDIS_HOST, port: REDIS_PORT } })
+  redis.on('error', (err) => console.log('Redis Client Error', err))
+  await redis.connect()
+  return redis
+}
 
 /**
  * Wait for Redis to finish loading.

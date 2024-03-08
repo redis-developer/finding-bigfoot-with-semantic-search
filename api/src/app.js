@@ -2,7 +2,7 @@ import express from 'express'
 import cors from 'cors'
 
 import { EXPRESS_BASE_URL, EXPRESS_PORT } from './config.js'
-import { fetch, search, save } from './embed.js'
+import { fetch, search, save } from './main.js'
 
 
 const app = express()
