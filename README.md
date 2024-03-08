@@ -19,3 +19,10 @@ If you are using an Intel-based Mac, you might need to change how Metal is insta
 ```bash
 npx --no node-llama-cpp download --no-metal
 ```
+
+
+Start with:
+
+```bash
+docker compose up -d
+```
