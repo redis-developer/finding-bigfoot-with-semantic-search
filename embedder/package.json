@@ -4,7 +4,7 @@
   "type": "module",
   "description": "TBD",
   "scripts": {
-    "start": "node app.js"
+    "start": "node src/app.js"
   },
   "author": "Guy Royse <guy@guyroyse.com> (http://guyroyse.com/)",
   "license": "MIT",

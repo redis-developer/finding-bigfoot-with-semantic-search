@@ -16,6 +16,9 @@ services:
     depends_on:
       - redis
 
+  # I found running embedders in a container to be too slow but your
+  # mileage may vary. Uncomment below if you want to try it out.
+
   # embedder:
   #   build: embedder
   #   deploy:
