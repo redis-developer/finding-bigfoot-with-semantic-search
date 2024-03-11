@@ -1,5 +1,5 @@
 {
-  "name": "finding-bigfoot",
+  "name": "finding-bigfoot-api",
   "version": "1.0.0",
   "type": "module",
   "description": "A sample application for semantic search using Redis, LangChain, and free models.",

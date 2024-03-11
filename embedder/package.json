@@ -1,8 +1,8 @@
 {
-  "name": "embedder",
+  "name": "finding-bigfoot-embedder",
   "version": "1.0.0",
   "type": "module",
-  "description": "TBD",
+  "description": "A sample application for semantic search using Redis, LangChain, and free models.",
   "scripts": {
     "start": "node src/app.js"
   },

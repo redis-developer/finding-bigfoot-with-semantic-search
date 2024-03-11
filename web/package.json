@@ -1,7 +1,7 @@
 {
-  "name": "lit-test",
+  "name": "bigfoot-finder-web",
   "version": "1.0.0",
-  "description": "",
+  "description": "A sample application for semantic search using Redis, LangChain, and free models.",
   "type": "module",
   "scripts": {
     "dev": "vite",

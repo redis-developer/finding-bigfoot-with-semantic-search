@@ -2,7 +2,7 @@
   "name": "finding-bigfoot-loader",
   "version": "1.0.0",
   "type": "module",
-  "description": "Reads all the Bigfoot sightings from a JSONL file and saves them to Bigfoot Semantic Search API.",
+  "description": "Reads Bigfoot sightings from a JSONL file and saves them to Bigfoot Semantic Search API.",
   "scripts": {
     "start": "node load.js"
   },
@@ -12,6 +12,7 @@
   "dependencies": {
     "axios": "^1.6.5",
     "command-line-args": "^5.2.1",
+    "command-line-usage": "^7.0.1",
     "natural": "^6.10.4"
   }
 }

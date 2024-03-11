@@ -8,7 +8,7 @@ import { BIGFOOT_PREFIX, BIGFOOT_STREAM } from './config.js'
 export async function save(sighting) {
 
   // set the basic information in Redis
-  const key = sightingKey(id)
+  const key = sightingKey(sighting.id)
   await redis.hSet(key, sighting)
 
   // if there is observed text...

@@ -26,3 +26,12 @@ Start with:
 ```bash
 docker compose up -d
 ```
+
+Embedder is not started by default. To start, use npm:
+
+```bash
+cd embedder
+npm start
+```
+
+You can start as many of these as your CPU or GPU is happy to run. The will gladly run in parallel.
