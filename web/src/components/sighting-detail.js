@@ -4,6 +4,7 @@ import UnlitElement from '../util/unlit-element.js'
 import SightingTitle from './sighting-title.js'
 import SightingSummary from './sighting-summary.js'
 import SightingAccount from './sighting-account.js'
+import SightingLocation from './sighting-location.js'
 
 import { CloudCover, MoonPhase, Wind } from '../util/weather.js'
 
@@ -48,20 +49,7 @@ export default class SightingDetail extends UnlitElement {
           <sighting-title .sighting=${this.sighting}></sighting-title>
           <sighting-summary .sighting=${this.sighting}></sighting-summary>
           <sighting-account .sighting=${this.sighting}></sighting-account>
-
-          <h2 class="text-xl font-semibold pt-4">Location</h2>
-
-          <p class="pt-1 pb-2">${location}</p>
-
-          <p>
-            <span class="font-bold">Location:</span>
-            <span>${countyAndState}</span>
-          </p>
-          <p>
-            <span class="font-bold">Coordinates:</span>
-            <span>${coordinates}</span>
-            ${ mapUrl ? html`<a href="${mapUrl}" target="_blank">🌎</a>` : '' }
-          </p>
+          <sighting-location .sighting=${this.sighting}></sighting-location>
 
           <h2 class="text-xl font-semibold pt-4">Weather</h2>
 
