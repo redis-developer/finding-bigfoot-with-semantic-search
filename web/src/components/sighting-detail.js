@@ -1,6 +1,10 @@
 import { html } from 'lit'
 
 import UnlitElement from '../util/unlit-element.js'
+import SightingTitle from './sighting-title.js'
+import SightingSummary from './sighting-summary.js'
+import SightingAccount from './sighting-account.js'
+
 import { CloudCover, MoonPhase, Wind } from '../util/weather.js'
 
 
@@ -15,13 +19,6 @@ export default class SightingDetail extends UnlitElement {
     const moonPhase = new MoonPhase(this.sighting.moonPhase)
     const cloudCover = new CloudCover(this.sighting.cloudCover)
     const wind = new Wind(this.sighting.windSpeed, this.sighting.windBearing)
-
-    const title = this.#formatTitle(this.sighting)
-    const date = this.#formatDate(this.sighting)
-    const classification = this.sighting.classification
-    const summary = this.sighting.summary
-
-    const observed = this.sighting.observed
 
     const location = this.sighting.locationDetails
     const countyAndState = this.#formatCountyAndState(this.sighting)
@@ -48,22 +45,9 @@ export default class SightingDetail extends UnlitElement {
 
         <div class="flex flex-col items-left pb-96">
 
-          <h1 class="text-3xl pr-24 pb-2">${title}</h1>
-
-          <p>
-            <span class="font-bold">Date:</span>
-            <span>${date}</span>
-          </p>
-          <p>
-            <span class="font-bold ">Classification:</span>
-            <span>${classification}</span>
-          </p>
-
-          <p class="pt-1">${summary}</p>
-
-          <h2 class="text-xl font-semibold pt-4">Eyewitness Account</h2>
-
-          <p class="pt-1">${observed}</p>
+          <sighting-title .sighting=${this.sighting}></sighting-title>
+          <sighting-summary .sighting=${this.sighting}></sighting-summary>
+          <sighting-account .sighting=${this.sighting}></sighting-account>
 
           <h2 class="text-xl font-semibold pt-4">Location</h2>
 
