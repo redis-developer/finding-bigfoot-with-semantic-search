@@ -80,7 +80,7 @@ async function createIndex() {
         ALGORITHM: VectorAlgorithms.FLAT,
         TYPE: 'FLOAT32',
         DIM: 384,
-        DISTANCE_METRIC: 'COSINE'
+        DISTANCE_METRIC: 'L2'
       }
     }, {
       ON: 'HASH',
